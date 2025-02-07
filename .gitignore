@@ -11,6 +11,13 @@ out/
 data-static/
 *-ROLES.json
 *-SAFE.json
+ETHEREUM.json
+POLYGON.json
+AVALANCHE.json
+BNB_CHAIN.json
+CELO.json
+CRONOS.json
+SONIC.json
 
 
 # ABIs
