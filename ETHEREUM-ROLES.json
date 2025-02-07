@@ -1,0 +1,6 @@
+{
+  "deployer": "0x8A30280C6e894e176805Ec60a814f1dF1b81e964",
+  "medium_critical_ops": "0x8A30280C6e894e176805Ec60a814f1dF1b81e964",
+  "pauser": "0x8A30280C6e894e176805Ec60a814f1dF1b81e964",
+  "super_critical_ops": "0x8A30280C6e894e176805Ec60a814f1dF1b81e964"
+}

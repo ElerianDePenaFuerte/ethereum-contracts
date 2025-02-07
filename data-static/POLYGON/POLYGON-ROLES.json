@@ -1,0 +1,6 @@
+{
+  "deployer": "0x3972Fd0Be862500cdEe1eA41d5cDa0Bd2293acB5",
+  "medium_critical_ops": "0x27D396E48e80711Ad80021359bB057f8321658e4",
+  "pauser": "0x28D212F3A4ddE33714185e445CF16BDd08A34CAe",
+  "super_critical_ops": "0x2b68881b8C0D01A751168341b39231ABafd6cfe5"
+}

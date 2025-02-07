@@ -4,6 +4,9 @@ set -e
 
 mkdir -p .foundry/keystores
 
+
+
+
 MNEMONIC="test test test test test test test test test test test junk"
 
 GAS_PAYER_PRIVATE_KEY=$(cast wallet private-key --mnemonic "$MNEMONIC" --mnemonic-index 0) # 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
@@ -12,6 +15,8 @@ DEPLOYER_PRIVATE_KEY=$(cast wallet private-key --mnemonic "$MNEMONIC" --mnemonic
 MEDIUM_CRITICAL_OPS_PRIVATE_KEY=$(cast wallet private-key --mnemonic "$MNEMONIC" --mnemonic-index 102) # 0x0e9971c0005D91336c1441b8F03c1C4fe5FB4584
 SUPER_CRITICAL_OPS_PRIVATE_KEY=$(cast wallet private-key --mnemonic "$MNEMONIC" --mnemonic-index 103) # 0xC4c81D5C1851702d27d602aA8ff830A7689F17cc
 
+
+rm -f ~/.foundry/keystores/*
 cast wallet import --unsafe-password '' --private-key "$GAS_PAYER_PRIVATE_KEY" gas_payer
 cast wallet import --unsafe-password '' --private-key "$PAUSER_PRIVATE_KEY" pauser
 cast wallet import --unsafe-password '' --private-key "$DEPLOYER_PRIVATE_KEY" deployer
@@ -58,6 +63,7 @@ DATA_DIR="$ROOT_DIR/data-static"
 
 mkdir -p $DATA_DIR
 
+
 # Sign the safe transactions with the given signers generated 
 # using the given script name, function name, chain, and chain_id.
 # It picks the latest run of the script/chain-id
@@ -88,16 +94,16 @@ deploy_for_chain() {
     local port=$3
     local chain_dir="$DATA_DIR/$chain"
 
-    mkdir -p $chain_dir
-    cd $chain_dir
+    mkdir -p "$chain_dir"
+    cd "$chain_dir"
 
-    echo ${MNEMONIC} > $chain_dir/mnemonic.txt
+    echo ${MNEMONIC} > "$chain_dir"/mnemonic.txt
 
-    cp -f ~/.foundry/keystores/gas_payer $chain_dir/keystore
-    cp -f ~/.foundry/keystores/pauser $chain_dir/pauser
-    cp -f ~/.foundry/keystores/deployer $chain_dir/deployer
-    cp -f ~/.foundry/keystores/medium_critical_ops $chain_dir/medium_critical_ops
-    cp -f ~/.foundry/keystores/super_critical_ops $chain_dir/super_critical_ops
+    cp -f ~/.foundry/keystores/gas_payer "$chain_dir"/keystore
+    cp -f ~/.foundry/keystores/pauser "$chain_dir"/pauser
+    cp -f ~/.foundry/keystores/deployer "$chain_dir"/deployer
+    cp -f ~/.foundry/keystores/medium_critical_ops "$chain_dir"/medium_critical_ops
+    cp -f ~/.foundry/keystores/super_critical_ops "$chain_dir"/super_critical_ops
     
     echo "Starting deployment for $chain (Chain ID: $chain_id, Port: $port)"
 

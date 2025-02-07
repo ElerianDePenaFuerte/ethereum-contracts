@@ -1,122 +1,64 @@
 <img src="https://raw.githubusercontent.com/pantos-io/ethereum-contracts/img/pantos-logo-full.svg" alt="Pantos logo" align="right" width="120" />
 
-[![CI](https://github.com/pantos-io/ethereum-contracts/actions/workflows/ci.yaml/badge.svg)](https://github.com/pantos-io/ethereum-contracts/actions/workflows/ci.yaml) 
+<img src="https://oinkhunta.pantos.farm/OINKHUNTA.png" alt="Oinkhunta logo" align="right" width="120" />
 
-# Pantos on-chain components for Ethereum and compatible blockchains
 
-This repository contains the Pantos smart contracts for Ethereum-compatible
-blockchains.
 
-## Install Foundry 
-```shell
-$ curl -L https://foundry.paradigm.xyz | bash
-$ foundryup
-```
+# Modified Pantos on-chain components for Ethereum and compatible blockchains
 
-## Usage
+This repository contains modified Pantos smart contracts for Ethereum-compatible
+blockchains. Modifications 
 
-### Install dependencies
+Check the original [Pantos Readme](README_PANTOS.md) and the attached modification log.
+
+## Adjustment Log
 
 ```shell
-$ forge install
-$ npm install
+
+    file: ./script/helpers/SafeAddresses.s.sol
+    Since all roles are replaced by a single wallet instead of a safe, the attached script will result in an Error. therefore the safes are set manually (since not used at all). Alternative would be to exclude the entire script from this point on resulting in no output files generated.
+    152    // safeAddresses[0] = accessController.pauser();
+    153    // safeAddresses[1] = accessController.deployer();
+    154    // safeAddresses[2] = accessController.mediumCriticalOps();
+    155    // safeAddresses[3] = accessController.superCriticalOps();
+    156
+    157    console2.log("ADJUSTED ACCESSCONTROLER ADDRESSES");
+    158    safeAddresses[0] = 0xb630E57aa63d1FfcB9f3366a49b7d39708442682;
+    159    safeAddresses[1] = 0xfA934630fDC17eA53a46E1700aE84B8349952F4D;
+    160    safeAddresses[2] = 0x2a8995dC21dC18F6522b951F05865d756DC6ECC2;
+    161    safeAddresses[3] = 0x00a9262b83104e8756e31e1DeD9Dff5F8B08942a;
+
+
+
+
 ```
 
-### Build
-
+## Deployment
 ```shell
-$ forge build
+
+# 
+# 1. Create .env file including the following content:
+PRIVATE_KEY=<YOUR PRIVATE KEY>
+ETHERSCAN_API_KEY=<YOUR ETHERSCAN API KEY FOR VERIFICATION>
+
+# Example HOLESKY:
+# 2. Deploy & Verify safes:
+forge script ./script/DeploySafe.s.sol --private-key $PRIVATE_KEY --rpc-url ethereum-holesky-testnet --etherscan-api-key $ETHERSCAN_API_KEY --slow --force --sig "deploySafes(address[],uint256,address[],uint256,address[],uint256,address[],uint256)" "[<YOUR WALLET>]" 1 "[<YOUR WALLET>]" 1 "[<YOUR WALLET>]" 1 "[<YOUR WALLET>]" 1 --broadcast --verify
+
+# 3. modify ETHEREUM-ROLES.JSON addresses from safes to single wallet
+
+# 4. Deploy & Verify PANTOS contracts:
+forge script ./script/DeployContracts.s.sol --private-key $PRIVATE_KEY --rpc-url ethereum-holesky-testnet --etherscan-api-key $ETHERSCAN_API_KEY --slow --force   --sig "deploy(uint256,uint256)" 100000000000000000 100000000000000000 --broadcast --verify
+
+# 5. Execute Role Actions (Primary Validator node wallet = gas payer)
+forge script ./script/DeployContracts.s.sol --private-key $PRIVATE_KEY --rpc-url ethereum-holesky-testnet --sig "roleActions(uint256,uint256,uint256,address,address[])" 0 10 1 <YOUR WALLET> "[]" --slow --force --broadcast
+
 ```
 
-### Format
+As a result you will receive the following files in root directory:
+`ETHEREUM-ROLES.json`
+`ETHEREUM-SAFE.json`
+`ETHEREUM.json`
 
-```shell
-$ make format
-```
 
-### Lint
 
-```shell
-$ make lint
-```
-
-### Test
-
-```shell
-$ make test
-```
-
-### Coverage
-
-```shell
-$ make coverage
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### ABIs
-
-```shell
-$ make abis
-```
-
-### Contract documentation
-
-```shell
-$ make docs
-```
-
-### ABI documentation
-
-```shell
-$ make docs-abis
-```
-
-### Contract control flow and inheritance graphs
-
-```shell
-$ make docs-graph
-$ make docs-inheritance
-```
-
-### Docker
-
-**IMPORTANT**: This setup is meant for Docker Desktop. While you may be able to get the same configuration with a locally installed docker engine, we don't actively support this because of the variation amongst distributions.
-
-This setup has been tested with Docker Desktop 2.29.2.
-
-You can run local blockchain nodes using `make docker`. This will start two nodes in ports `8545` and `8546` (called eth and bnb respectively) with the contracts deployed on the same addresses.
-
-This will also create two docker volumes, `eth-data` and `bnb-data`, containing the list of deployed addresses (both in json and .env formats) alongside with the keystore and accounts used. You can access these by using either a docker GUI or by mounting it into a container like this `docker run --rm -v bnb-data:/volume alpine ls /volume`
-
-If using this project alongside the service or validator node projects one can run the full stack by first starting the blockchain nodes with `make docker` and, after these are running, doing the same in the other projects. They will automatically pick up the data exposed by this project.
-
-#### Local development with Docker
-
-You can do local development with Docker by enabling dev mode (Docker watch mode). To do so, set the environment variable `DEV_MODE` to true, like this:
-
-`DEV_MODE=true make docker`
-
-#### Multiple local deployments
-
-We support multiple local deployments, for example for testing purposes, you can run the stacks like this:
-
-`make docker INSTANCE_COUNT=<number of instances>`
-
-To remove all the stacks, run the following:
-
-`make docker-remove`
-
-Please note that this mode uses an incremental amount of resources and that Docker Desktop doesn't fully support displaying it, but it should be good enough to test multi-sig locally.
-
-### Deploy & Operations
-
-Please see ```scripts/README.md```
-
-## Contributions
-
-Check our [code of conduct](CODE_OF_CONDUCT.md)
